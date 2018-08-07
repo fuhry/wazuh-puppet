@@ -27,6 +27,7 @@ class wazuh::client(
   $agent_package_name          = $::wazuh::params::agent_package,
   $agent_package_version       = 'installed',
   $agent_service_name          = $::wazuh::params::agent_service,
+  $package_subtree             = $::wazuh::params::package_subtree,
   $manage_client_keys          = 'export',
   $agent_auth_password         = undef,
   $wazuh_manager_root_ca_pem   = undef,
@@ -55,7 +56,10 @@ class wazuh::client(
   case $::kernel {
     'Linux' : {
       if $manage_repo {
-        class { 'wazuh::repo': redhat_manage_epel => $manage_epel_repo }
+        class { 'wazuh::repo':
+          redhat_manage_epel => $manage_epel_repo,
+          package_subtree    => $package_subtree,
+        }
         if $::osfamily == 'Debian' {
           Class['wazuh::repo'] -> Class['apt::update'] -> Package[$agent_package_name]
         } else {
