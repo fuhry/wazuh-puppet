@@ -14,8 +14,10 @@ class wazuh::export_agent_key(
       per_page     => 1,
     })
 
-    if $host_info['results'][0]['name'] == $::hostname or
-       $host_info['results'][0]['name'] == $::fqdn
+    if $host_info['results'][0] != undef and (
+         $host_info['results'][0]['name'] == $::hostname or
+         $host_info['results'][0]['name'] == $::fqdn
+       )
     {
       $agent_id = $host_info['results'][0]['id']
     }
